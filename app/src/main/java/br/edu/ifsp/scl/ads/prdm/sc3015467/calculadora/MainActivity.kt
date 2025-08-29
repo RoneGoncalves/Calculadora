@@ -49,7 +49,10 @@ class MainActivity : AppCompatActivity() {
             if (operand1 == null) {
                 operand1 = currentValue.toDouble()
             } else {
-                operand1 = calculateIntermediateResult(operand1!!, currentValue.toDouble(), operator)
+                val result = calculateIntermediateResult(operand1!!, currentValue.toDouble(), operator)
+                if (result != null) {
+                    operand1 = result
+                }
             }
             operator = op
             amb.titleTextView.text = "Resultado: $operand1 $operator"
@@ -57,13 +60,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun calculateIntermediateResult(operand1: Double, operand2: Double, operator: String?): Double {
+    private fun calculateIntermediateResult(operand1: Double, operand2: Double, operator: String?): Double? {
         return when (operator) {
-            "+" -> (operand1 + operand2).toInt().toDouble()
-            "-" -> (operand1 - operand2).toInt().toDouble()
-            "*" -> (operand1 * operand2).toInt().toDouble()
-            "/" -> if (operand2 != 0.0) (operand1 / operand2).toInt().toDouble() else Double.NaN
-            else -> operand2
+            "+" -> operand1 + operand2
+            "-" -> operand1 - operand2
+            "*" -> operand1 * operand2
+            "/" -> if (operand2 != 0.0) {
+                operand1 / operand2
+            } else {
+                amb.editTextResult.text.clear()
+                null
+            }
+            else -> null
         }
     }
 
@@ -74,11 +82,16 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val result = calculateIntermediateResult(operand1!!, operand2, operator).toInt()
-        amb.titleTextView.text = "Resultado: $result"
-        currentValue = ""
-        operator = null
-        operand1 = result.toDouble()
+        val result = calculateIntermediateResult(operand1!!, operand2, operator)
+
+        if (result != null) {
+            amb.titleTextView.text = "Resultado: $result"
+            currentValue = ""
+            operator = null
+            operand1 = result
+        } else {
+            Toast.makeText(this, "Não existe divisão por zero", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun clear() {
