@@ -10,73 +10,81 @@ class MainActivity : AppCompatActivity() {
     private val amb: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
+
+    private var currentValue: String = ""
     private var operand1: Double? = null
     private var operator: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(amb.root)
 
         with(amb) {
-            button1.setOnClickListener { appendToResult("1") }
-            button2.setOnClickListener { appendToResult("2") }
-            button3.setOnClickListener { appendToResult("3") }
+            button1.setOnClickListener { appendToCurrentValue("1") }
+            button2.setOnClickListener { appendToCurrentValue("2") }
+            button3.setOnClickListener { appendToCurrentValue("3") }
             buttonAdd.setOnClickListener { setOperator("+") }
-            button4.setOnClickListener { appendToResult("4") }
-            button5.setOnClickListener { appendToResult("5") }
-            button6.setOnClickListener { appendToResult("6") }
+            button4.setOnClickListener { appendToCurrentValue("4") }
+            button5.setOnClickListener { appendToCurrentValue("5") }
+            button6.setOnClickListener { appendToCurrentValue("6") }
             buttonSubtract.setOnClickListener { setOperator("-") }
-            button7.setOnClickListener { appendToResult("7") }
-            button8.setOnClickListener { appendToResult("8") }
-            button9.setOnClickListener { appendToResult("9") }
+            button7.setOnClickListener { appendToCurrentValue("7") }
+            button8.setOnClickListener { appendToCurrentValue("8") }
+            button9.setOnClickListener { appendToCurrentValue("9") }
             buttonMultiply.setOnClickListener { setOperator("*") }
-            button0.setOnClickListener { appendToResult("0") }
+            button0.setOnClickListener { appendToCurrentValue("0") }
             buttonEquals.setOnClickListener { calculateResult() }
             buttonDivide.setOnClickListener { setOperator("/") }
             buttonClear.setOnClickListener { clear() }
         }
     }
 
-    private fun appendToResult(value: String) {
-        amb.editTextResult.append(value)
+    private fun appendToCurrentValue(value: String) {
+        currentValue += value
+        amb.editTextResult.setText(currentValue)
     }
 
     private fun setOperator(op: String) {
-        if (amb.editTextResult.text.isNotEmpty()) {
-            operand1 = amb.editTextResult.text.toString().toDoubleOrNull()
+        if (currentValue.isNotEmpty()) {
+            if (operand1 == null) {
+                operand1 = currentValue.toDouble()
+            } else {
+                operand1 = calculateIntermediateResult(operand1!!, currentValue.toDouble(), operator)
+            }
             operator = op
+            amb.titleTextView.text = "Resultado: $operand1 $operator"
+            currentValue = ""
+        }
+    }
 
-            amb.editTextResult.text.clear()
-        } else {
-            operator = op
+    private fun calculateIntermediateResult(operand1: Double, operand2: Double, operator: String?): Double {
+        return when (operator) {
+            "+" -> (operand1 + operand2).toInt().toDouble()
+            "-" -> (operand1 - operand2).toInt().toDouble()
+            "*" -> (operand1 * operand2).toInt().toDouble()
+            "/" -> if (operand2 != 0.0) (operand1 / operand2).toInt().toDouble() else Double.NaN
+            else -> operand2
         }
     }
 
     private fun calculateResult() {
-        val operand2 = amb.editTextResult.text.toString().toDoubleOrNull()
+        val operand2 = currentValue.toDoubleOrNull()
         if (operand1 == null || operand2 == null || operator == null) {
             Toast.makeText(this, "Operação inválida", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val result = when (operator) {
-            "+" -> operand1!! + operand2
-            "-" -> operand1!! - operand2
-            "*" -> operand1!! * operand2
-            "/" -> if (operand2 == 0.0) {
-                Toast.makeText(this, "Divisão por zero não é permitida", Toast.LENGTH_SHORT).show()
-                return
-            } else {
-                operand1!! / operand2
-            }
-            else -> null
-        }
-        amb.editTextResult.setText(result.toString())
+        val result = calculateIntermediateResult(operand1!!, operand2, operator).toInt()
+        amb.titleTextView.text = "Resultado: $result"
+        currentValue = ""
+        operator = null
+        operand1 = result.toDouble()
     }
 
     private fun clear() {
         amb.editTextResult.text.clear()
+        amb.titleTextView.text = "Resultado: "
+        currentValue = ""
         operand1 = null
         operator = null
     }

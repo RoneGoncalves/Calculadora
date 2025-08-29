@@ -16,6 +16,8 @@
     <string name="equals">=</string>
     <string name="divide">÷</string>
     <string name="limpar">Limpar</string>
-    <string name="calculadora_simples">Calculadora Simples</string>
-    <string name="resultado">Resultado</string>
+    <string name="Resultado">Calculadora Simples</string>
+    <string name="Digite_o_número">Resultado</string>
+    <string name="digite_o_n_mero">Digite_o_número</string>
+    <string name="resultado">Resultado: </string>
 </resources>

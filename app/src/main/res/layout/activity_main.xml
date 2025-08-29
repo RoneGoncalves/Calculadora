@@ -12,7 +12,7 @@
         android:id="@+id/editTextResult"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/resultado"
+        android:hint="@string/digite_o_n_mero"
         android:inputType="none"
         android:focusable="false"
         android:gravity="end"
@@ -21,17 +21,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        />
+        android:autofillHints="" />
 
     <TextView
         android:id="@+id/titleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/calculadora_simples"
+        android:paddingTop="8dp"
+        android:text="@string/resultado"
         android:textSize="24sp"
-        app:layout_constraintTop_toBottomOf="@id/editTextResult"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editTextResult" />
 
     <GridLayout
         android:layout_width="0dp"
@@ -44,7 +45,6 @@
         android:columnCount="4"
         android:rowCount="5">
 
-        <!-- Buttons para números -->
         <Button android:id="@+id/button1" android:text="@string/_1" />
         <Button android:id="@+id/button2" android:text="@string/_2" />
         <Button android:id="@+id/button3" android:text="@string/_3" />
